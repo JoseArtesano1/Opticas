@@ -33,16 +33,17 @@ class Router{
 
 
 
-     // if (isset($_SERVER['PATH_INFO'])) {
-     //   $urlActual = $_SERVER['PATH_INFO'] ?? '/';
-     // } else {
-      //  $urlActual = $_SERVER['REQUEST_URI'] === '' ? '/' : $_SERVER['REQUEST_URI'];
-     // }
+      if (isset($_SERVER['PATH_INFO'])) {
+        $urlActual = $_SERVER['PATH_INFO'] ?? '/';
+      } else {
+        $urlActual = $_SERVER['REQUEST_URI'] === '' ? '/' : $_SERVER['REQUEST_URI'];
+      }
 
 
-     $urlActual = $_SERVER['REQUEST_URI'] === '' ? '/' : $_SERVER['REQUEST_URI'];
+    /*  $urlActual = $_SERVER['REQUEST_URI'] === '' ? '/' : $_SERVER['REQUEST_URI'];
      $urlActual =  explode('?',$urlActual);
-     $urlActual =  array_shift($urlActual);
+     $urlActual =  array_shift($urlActual); */
+
      //  $urlActual= $_SERVER['PATH_INFO'] ?? '/';
        $metodo= $_SERVER['REQUEST_METHOD'];
 
