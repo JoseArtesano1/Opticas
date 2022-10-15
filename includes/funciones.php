@@ -136,12 +136,13 @@ function validarORedireccionar(string $url ,$idEspecial){
 function correo($mail, $nombre, $movil, $email,$fecha, $hora, $horafinal, $servicio, $crear,$rol){
       //configurar SMTP
       $mail->isSMTP();
-      $mail->Host='smtp.gmail.com';  //especifico de gmail
+     // $mail->Host='smtp.gmail.com';  //especifico de gmail
+      $mail->Host='smtp.mailtrap.io'; 
       $mail->SMTPAuth=true;
-      $mail->Username='pruebaproyectosjr@gmail.com';
-      $mail->Password='cambio50?y';
+      $mail->Username='5ea1ba94030e99';
+      $mail->Password='7d97af4c33a407';
       $mail->SMTPSecure='tls';   //canal seguro
-      $mail->Port=587;
+      $mail->Port=2525;
 
       //configurar el contenido de email
       $mail->setFrom('pruebaproyectosjr@gmail.com', 'OpticaCitas'); //quien envia el email
@@ -204,12 +205,13 @@ function correoAlta($mail, $correo, $password, $alta){
 
    //configurar SMTP
    $mail->isSMTP();
-   $mail->Host='smtp.gmail.com';  //especifico de gmail
-   $mail->SMTPAuth=true;
-   $mail->Username='pruebaproyectosjr@gmail.com';
-   $mail->Password='cambio50?y';
-   $mail->SMTPSecure='tls';   //canal seguro
-   $mail->Port=587;
+      $mail->Host='smtp.mailtrap.io'; 
+      $mail->SMTPAuth=true;
+      $mail->Username='5ea1ba94030e99';
+      $mail->Password='7d97af4c33a407';
+      $mail->SMTPSecure='tls';   //canal seguro
+      $mail->Port=2525;
+
 
     //configurar el contenido de email
     $mail->setFrom('pruebaproyectosjr@gmail.com', 'OpticaCitas'); //quien envia el email
