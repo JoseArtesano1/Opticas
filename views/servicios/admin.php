@@ -76,7 +76,7 @@
         </tbody>
         </table>
 <!-- USUARIOS -->
-    <h2>Usuarios Sin Validar</h2>
+    <h2>Usuarios Validados</h2>
         <table class="usuariosTabla tablasConf tablaGeneral">
         <thead>
           <tr>
@@ -102,8 +102,7 @@
                  name="tipo" value="usuario"> 
                  <input type="submit" class="boton-rojo-block" value="Eliminar">
                 </form> 
-                <a href="/paginas/actualizarUser?idUsuarios=<?php echo $usuario->idUsuarios;?>"
-                class="boton-amarillo-block">Actualizar</a>
+               
             </td>
           </tr>
         <?php endforeach; ?> 

@@ -27,6 +27,8 @@
                 <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response"> 
                 <label for="telefono">Teléfono</label>
                 <input type="tel" placeholder="Teléfono" id="telefono" name="usuario[telefono]">
+                <label for="password">PassWord</label>
+                <input type="password" name="usuario[acceso]" placeholder="Tu password" id="acceso" >
                 <label for="condiciones">Aceptar Condiciones de uso</label>
                 <input type="checkbox" id="condiciones" value="1" name="usuario[condiciones]">
                 <a href="/condicion" class="boton boton-verde">Leer Condiciones</a>

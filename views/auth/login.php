@@ -8,14 +8,18 @@
          <?php endforeach; ?>
          <?php  if($miUsuario===null): ?> 
           <?php else: ?>
-            <div class="comunicado"> <p>En Breve será activado</p>  </div>
+            <div class="comunicado"> <p>Active su cuenta desde su e-mail</p>  </div>
           <?php endif; ?>
           <?php  if($mensajes): ?> 
                      <p class="alerta error"> <?php echo s($mensajes) ?></p>
           <?php endif; ?>
 
+
+         
+
         <form class="formulario" id="formularioLogin" method="POST" action="/login" >
         <fieldset>
+        <a  href="/actualizarUser">¿Has olvidado la contraseña?</a>
                 <legend>Email y Password</legend>
                
                 <label for="correo">E-mail</label>
@@ -26,6 +30,7 @@
                
             </fieldset>
             <input type="submit" value="Iniciar Sesión" class="boton boton-verde">
+          
         </form>
         <?php 
 

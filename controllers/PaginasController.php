@@ -32,24 +32,19 @@ class PaginasController{
         if($_SERVER['REQUEST_METHOD']==='POST'){
    
             $usuario= new Usuarios($_POST['usuario']);
+            
             $retorno=$ObjCaptcha->getCaptcha($_POST['g-recaptcha-response']); //obtener el objeto del html
          
           if($retorno->success ==true && $retorno->score >0.7){  //variar el indice para mas o menos control
                $errores=  $usuario->validar();
-           
+              
               if(empty($errores)){
-                 
-                $pass=chr(rand(ord('a'),ord('z')));//generamos una letra
-                $pass1=chr(rand(ord('A'),ord('Z')));//generamos otra letra
-                $passNumero=rand(10000,50000);// generado número
-                $password=$pass.$passNumero.$pass1;// contraseña final se envia al usuario por email
-                           
+                              
                       // código para procesar los campos y enviar el form
-        
-                      if(correoAlta($mail,$usuario->correo,$password,true)){
-                        $usuario->acceso=password_hash($password, PASSWORD_DEFAULT); //se guarda en la bd
-                        $usuario->guardar(null,'/login?resultado=6');
-                       }
+                      $usuario->hashPassword();
+                      $usuario->crearToken();
+                      correoAlta($mail,$usuario->correo,$usuario->token,true);
+                      $usuario->guardar(null,'/login?resultado=6');
               }
                     
             }
@@ -65,34 +60,7 @@ class PaginasController{
     }
 
 
-    public static function modificarUsuario(Router $router){
-       
-        $id=validarORedireccionar('/admin','idUsuarios');
-        $usuario=Usuarios::findAdm($id);
-        $errores= Usuarios::getErrores();
- 
-        if($_SERVER['REQUEST_METHOD']==='POST'){
-             
-                //asignar atributos
-              
-                  $args=$_POST['usuario']?? []; //para que si no se marca damos por defecto array vacio
-                  $usuario->sincronizar($args); 
-                  $errores=$usuario->validarActivacion();
-
-              if(empty($errores)){
-                  $usuario->guardar($id, '/admin?resultado=2');
-              }
-             
-       }
- 
-         $router->render('/paginas/actualizarUser', [
-         'usuario'=>$usuario,
-         'errores'=>$errores
-          
-        ]);
- 
-
-    }
+  
 
 
     public static function eliminarUsuario(){
@@ -120,5 +88,37 @@ class PaginasController{
        }
         
     }
+
+
+
+
+    public static function confirmar(Router $router){
+        $errores = [];
+        $token=s($_GET['token']);
+        $usuario1=Usuarios ::where('token',$token);
+       
+        if(empty($usuario1)){
+
+            Usuarios::setErrores('error','Token no válido');
+          
+        }else{
+
+            $usuario1->estado="1";
+            $usuario1->token=null;
+            $usuario1->actualizarUser($usuario1->idUsuarios);
+            Usuarios::setErrores('exito','Cuenta Confirmada, Se puede logear');
+           
+        }
+
+        $errores=Usuarios::getErrores();
+        
+        $router->render('paginas/confirmar-cuenta',
+        ['alertas'=>$errores]);
+    }
+
+
+   
+
+
 
 }

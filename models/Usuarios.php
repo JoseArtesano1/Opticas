@@ -4,15 +4,16 @@ namespace Model;
 class Usuarios extends ActiveRecord{
 
      //base de datos
-     protected static $columnasDB=['nombre', 'Apellidos', 'correo', 'telefono', 'acceso','condiciones','estado'];
+     protected static $columnasDB=['nombre', 'Apellidos', 'correo', 'telefono', 'acceso','condiciones','estado','token'];
     
      protected static $tabla='usuarios';
      protected static $iD= 'correo';
    // protected static $iD='idUsuarios';
      protected static $idr= 'idUsuarios';
  
-     //errores
+     //errores y alertas
      protected static $errores=[];
+     protected static $alertas=[];
       
      public $idUsuarios;
      public $nombre;
@@ -22,6 +23,7 @@ class Usuarios extends ActiveRecord{
      public $acceso;
      public $condiciones;
      public $estado;
+     public $token;
  
   
      public function __construct($args=[])
@@ -32,8 +34,9 @@ class Usuarios extends ActiveRecord{
          $this->correo=$args['correo'] ?? '';
          $this->telefono=$args['telefono'] ?? '';
          $this->acceso=$args['acceso'] ?? '';
-         $this->condiciones=$args['condiciones'] ?? '';
+         $this->condiciones=$args['condiciones'] ?? '0';
          $this->estado=$args['estado'] ?? '0';
+         $this->token=$args['token'] ?? '';
      }
 
 
@@ -84,6 +87,14 @@ class Usuarios extends ActiveRecord{
             self::  $errores[]="Debe aceptar las condiciones";
            }
     
+           if(!$this->acceso){
+            self::  $errores[]="Debe introducir su contraseña";
+           }
+
+           if(strlen($this->acceso)<6){
+            self::  $errores[]="La contraseña debe tener al menos 6 caracteres";
+           }
+
           return self::$errores;
     }
 
@@ -100,6 +111,29 @@ class Usuarios extends ActiveRecord{
 
         }
 
+
+        public function validarEmail(){
+
+          if(!$this->correo){
+            self:: $alertas['error'] []="E-mail es obligatorio";
+          }
+         
+          return self::$alertas;
+
+        }
+
+        public function validarPassWord(){
+
+          if(!$this->acceso){
+            self:: $errores[]="Introduzca su contraseña";
+          }
+          if(strlen($this->acceso)<6){
+            self::  $errores[]="La contraseña debe tener al menos 6 caracteres";
+           }
+          return self::$errores;
+
+        }
+
         public function validarActivacion(){
 
           if(!$this->estado){
@@ -109,6 +143,9 @@ class Usuarios extends ActiveRecord{
           return self::$errores;
 
         }
+
+
+
 
         
        public function existeUsuario(){
@@ -156,5 +193,15 @@ class Usuarios extends ActiveRecord{
        }
 
       
+       public function hashPassword(){
+        $this->acceso=password_hash($this->acceso, PASSWORD_BCRYPT);
+       }
+
+
+       public function crearToken(){
+        $this->token=uniqid();
+       }
+
+       
 
 }

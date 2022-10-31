@@ -4,6 +4,7 @@ namespace Controllers;
 use MVC\Router;
 use Model\Usuarios;
 use Model\Intentos;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class LoginController{
 
@@ -15,7 +16,9 @@ class LoginController{
     $intento=new Intentos;
     $db=conectarDB();
     if($_SERVER ['REQUEST_METHOD']==='POST'){
+      
         $usuario= new Usuarios($_POST);
+        
         $errores=$usuario->validarLogin();
        
         if(empty($errores)){
@@ -78,5 +81,104 @@ class LoginController{
     $_SESSION =[];
     header('Location: /');
   }
+
+
+
+  public static function modificarUsuario(Router $router){
+   
+    $mail= new PHPMailer(); 
+    $errores = [];
+    $alertas=[];
+
+    if($_SERVER ['REQUEST_METHOD']==='POST'){
+           //asignar atributos
+             $auth= new Usuarios($_POST);
+             
+             $errores=$auth->validarEmail();
+            
+              
+          if(empty($errores)){
+
+            $usuario=Usuarios::where('correo', $auth->correo);
+           
+            
+              if($usuario && $usuario->estado==="1"){
+                if($usuario->idUsuarios!="1"){
+                  $usuario->crearToken();
+                  $usuario->actualizarUser($usuario->idUsuarios);
+                  enviarInstrucciones($mail,$usuario->correo, $usuario->token);
+                  Usuarios::setErrores('exito', 'Revisa tu E-mail');
+               //   header('Location: /login?resultado=7');
+
+                }else{
+                  Usuarios::setErrores('error', 'El usuario no existe');
+                }
+                
+              }else{
+                Usuarios::setErrores('error', 'El usuario no existe o sin confirmar');
+               
+              }
+   
+          }else{
+            Usuarios::setErrores('error', 'Introduce un Email');
+          }
+         
+   }
+
+   $errores=Usuarios::getErrores();
+ 
+     $router->render('auth/actualizarUser', [
+            'mistake'=>$errores
+         
+      ]);
+  }
+
+
+
+
+  public static function recuperar(Router $router){
+     $errores=[];
+    $token=s($_GET['token']);
+    $usuario=Usuarios ::where('token',$token);
+    $error=false;
+
+  
+ //   $_SESSION['token']=$token;
+
+    if(empty($usuario)){
+      Usuarios::setErrores('error','Token no válido');
+      $error=true;
+     // $_SESSION['token']=true;
+    }
+
+    if($_SERVER['REQUEST_METHOD']==='POST'){
+
+      $newPass=new Usuarios($_POST);
+      $errores= $newPass->validarPassWord();
+
+      if(empty($errores)){
+        $usuario->acceso=null;
+       
+        $usuario->acceso=$newPass->acceso;
+         $usuario->hashPassword();
+        $usuario->token=null;
+
+       $resultado= $usuario->actualizarUser($usuario->idUsuarios);
+      // debuguear($resultado);
+        if( is_null($resultado) ){ header('Location: /login');}
+        // else{header('Location: /login');}
+      } 
+    }
+
+    $errores=Usuarios::getErrores();
+
+    $router->render('auth/recuperar-cuenta',[
+      'alertas'=>$errores,
+      'error'=>$error
+    ]);
+
+  }
+
+
 
 }

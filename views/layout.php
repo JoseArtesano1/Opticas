@@ -6,10 +6,11 @@
   $auth=$_SESSION['login']?? false;
   $idU=$_SESSION['id']??false ;
 
+ $ruta= $_SERVER['PATH_INFO'] ?? '/';
   if(!isset($inicio)){
     $inicio=false;
   }
- 
+
 ?>
 
 <!DOCTYPE html>
@@ -40,8 +41,11 @@
                 <a href="/admin">Administrador</a>
                 <?php endif; ?>
              <?php else: ?>
+              <?php if($ruta==='/recuperar-cuenta'): ?>
+                <?php else: ?>
               <a href="/alta">Alta</a>
              <a href="/login">Login</a>
+             <?php endif; ?>
               <?php endif; ?>
          </nav>
         </div>
@@ -60,8 +64,11 @@
                 <a href="/admin">Administrador</a>
                 <?php endif; ?>
              <?php else: ?>
+              <?php if($ruta==='/recuperar-cuenta'): ?>
+                <?php else: ?>
               <a href="/alta">Alta</a>
              <a href="/login">Login</a>
+             <?php endif; ?>
               <?php endif; ?>
         </nav>
       </div>

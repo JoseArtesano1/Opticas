@@ -20,9 +20,9 @@ $router->get('/servicios/actualizar', [ServiciosController::class, 'actualizar']
 $router->post('/servicios/actualizar', [ServiciosController::class, 'actualizar']);
 $router->post('/servicios/eliminar', [ServiciosController::class, 'eliminar']);
 
-$router->post('/paginas/actualizarUser', [PaginasController::class, 'modificarUsuario']);
-$router->get('/paginas/actualizarUser', [PaginasController::class, 'modificarUsuario']);
+
 $router->post('/paginas/eliminar', [PaginasController::class, 'eliminarUsuario']);
+
 
 $router->get('/tecnicos/crear', [TecnicosController::class, 'crearTecnico']);
 $router->post('/tecnicos/crear', [TecnicosController::class, 'crearTecnico']);
@@ -45,10 +45,18 @@ $router->get('/',[PaginasController::class,'index']);
 $router->get('/alta',[PaginasController::class,'alta']);
 $router->post('/alta',[PaginasController::class,'alta']);
 $router->get('/condicion',[PaginasController::class, 'informar']);
+$router->get('/confirmar-cuenta',[PaginasController::class, 'confirmar']);
+$router->get('/recuperar-cuenta',[LoginController::class, 'recuperar']);
+$router->post('/recuperar-cuenta',[LoginController::class, 'recuperar']);
+
 
 //LOGIN Y AUTENTICAR
 $router->get('/login', [LoginController::class, 'login']);
 $router->post('/login', [LoginController::class, 'login']);
 $router->get('/logout', [LoginController::class, 'logout']);
+$router->get('/actualizarUser', [LoginController::class, 'modificarUsuario']);
+$router->post('/actualizarUser', [LoginController::class, 'modificarUsuario']);
+
+
 
 $router->comprobarRutas();

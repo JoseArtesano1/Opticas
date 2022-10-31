@@ -103,9 +103,12 @@ function mostrarNotificacion($codigo){
           $mensaje="No se puede Eliminar el Técnico, Elimina su servicio";
           break;
       case 6:
-          $mensaje="Creado correctamente, recibira un correo con sus claves";
+          $mensaje="Creado correctamente, recibira un correo para activar su cuenta";
           break;
       case 7:
+            $mensaje="Revisa tú E-mail";
+            break; 
+      case 8:
           $mensaje="Eres un bot";
           break; 
       default:
@@ -201,7 +204,7 @@ function correo($mail, $nombre, $movil, $email,$fecha, $hora, $horafinal, $servi
         
 }
 
-function correoAlta($mail, $correo, $password, $alta){
+function correoAlta($mail, $correo, $token,  $alta){
 
    //configurar SMTP
    $mail->isSMTP();
@@ -209,10 +212,9 @@ function correoAlta($mail, $correo, $password, $alta){
       $mail->SMTPAuth=true;
       $mail->Username='5ea1ba94030e99';
       $mail->Password='7d97af4c33a407';
+      $mail->Port=2525; 
       $mail->SMTPSecure='tls';   //canal seguro
-      $mail->Port=2525;
-
-
+      
     //configurar el contenido de email
     $mail->setFrom('pruebaproyectosjr@gmail.com', 'OpticaCitas'); //quien envia el email
     if($alta){
@@ -221,24 +223,53 @@ function correoAlta($mail, $correo, $password, $alta){
           $mail->addAddress('pruebaproyectosjr@gmail.com', 'OpticaCitas'); //quien recibe
     }
        
-
     $mail->Subject='Alta Usuario';
     //habilitar html
     $mail->isHTML(true);
     $mail->CharSet='UTF-8';  //PARA admitir acentos y otras cosas
       
       $contenido= '<html>';
-      $contenido .='<p>Su contraseña y usuario</p>';
-      $contenido .='<p>Usuario: ' . $correo  . '</p>';
-      $contenido .='<p>Contraseña: ' . $password  . '</p>';
-      $contenido .= '</html>';
+      $contenido .='<p>Confirma tu cuenta</p>';
+      $contenido .='<p>Presiona en el siguiente enlace</p>';
+      $contenido .="<p> Pincha aqui: <a href='https://pacific-beyond-12239.herokuapp.com/confirmar-cuenta?token=" 
+      . $token . "'>Confirmar</a></p>";
+       $contenido .= '</html>';
 
       $mail->Body=$contenido;
-  
-      if($mail->send()){
-        return  true;
-        }else{
-        return false;
-        }
+      $mail->send();
+           //https://pacific-beyond-12239.herokuapp.com/
+}
 
+
+function enviarInstrucciones($mail, $correo, $token){
+
+  //configurar SMTP
+  $mail->isSMTP();
+     $mail->Host='smtp.mailtrap.io'; 
+     $mail->SMTPAuth=true;
+     $mail->Username='5ea1ba94030e99';
+     $mail->Password='7d97af4c33a407';
+     $mail->Port=2525; 
+     $mail->SMTPSecure='tls';   //canal seguro
+     
+   //configurar el contenido de email
+   $mail->setFrom('pruebaproyectosjr@gmail.com', 'OpticaCitas'); //quien envia el email
+  
+          $mail->addAddress($correo, 'OpticaCitas');  //quien recibe
+        
+   $mail->Subject='Reestablecer tu contraseña';
+   //habilitar html
+   $mail->isHTML(true);
+   $mail->CharSet='UTF-8';  //PARA admitir acentos y otras cosas
+     
+     $contenido= '<html>';
+     $contenido .='<p>Recupera tú Password</p>';
+     $contenido .='<p>Presiona en el siguiente enlace</p>';
+     $contenido .="<p> Pincha aqui: <a href='https://pacific-beyond-12239.herokuapp.com/recuperar-cuenta?token=" 
+     . $token . "' target='_self'>Reestablecer Password</a></p>";
+      $contenido .= '</html>';
+
+     $mail->Body=$contenido;
+     $mail->send();
+          
 }

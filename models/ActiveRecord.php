@@ -11,9 +11,9 @@ class ActiveRecord{
       protected static $iD='';
       protected static $idr='';
 
-      //errores
+      //errores y alertas
       protected static $errores=[];
- 
+      protected static $alertas=[];
        //definir la conexion a la bd
        public static function setDB($database){
             self::$db=$database;
@@ -112,6 +112,26 @@ class ActiveRecord{
         }
       }
       
+
+     
+      public function actualizarUser($id){
+        //sanitizar datos
+        $atributos=$this->sanitizarDatos();
+        $valores=[];
+      foreach($atributos as $key=>$value){
+        $valores[]="{$key}='{$value}'";
+      }
+     
+      $query="UPDATE " . static::$tabla . " SET ";
+      $query .= join(', ', $valores);
+      $query .= " WHERE " . static::$idr . "= '" . self::$db->escape_string($id) . "' ";
+      $query .= " LIMIT 1 ";
+       
+       self::$db->query($query);
+       
+    }
+
+
   //eliminar registro
   
   public function eliminar($id, $pag){
@@ -184,6 +204,10 @@ class ActiveRecord{
      public static function getErrores(){
         return static::$errores;
      }
+
+     public static function setErrores($tipo,$mensaje){
+        static::$errores[$tipo] []=$mensaje;
+     }
   
      public function validar(){
        static::$errores =[];
@@ -201,7 +225,7 @@ class ActiveRecord{
     }
 
     public static function allFiltrado(){
-      $query="SELECT * FROM " . static::$tabla . " WHERE estado = ''";
+      $query="SELECT * FROM " . static::$tabla . " WHERE estado = '1' and Apellidos != 'Optica'";
       $resultado= self::consultarSQL($query);
      
       return $resultado;
@@ -211,7 +235,7 @@ class ActiveRecord{
   
     //buscar un registro por id como correo
     public static function find($id){  
-      //$query="SELECT * FROM " . static::$tabla . " WHERE id= ${id}";
+      
       $idSto=self::$db->escape_string($id);
       $query="SELECT * FROM " . static::$tabla . " WHERE " . static::$iD . "= '${idSto}'";
       $resultado=self::consultarSQL($query);  //obtener el objeto
@@ -219,6 +243,17 @@ class ActiveRecord{
       return array_shift($resultado);  //devuelve el primer elemento del array
     }
   
+
+
+    public static function where($columna, $valor){  
+     
+      $query="SELECT * FROM " . static::$tabla . " WHERE ${columna} = '${valor}'";
+      $resultado=self::consultarSQL($query);  //obtener el objeto
+      
+      return array_shift($resultado);  //devuelve el primer elemento del array
+    }
+
+
 
     public static function findAdm($id){  
       //$query="SELECT * FROM " . static::$tabla . " WHERE id= ${id}";
